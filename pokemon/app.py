@@ -1,4 +1,5 @@
-from pokemon import Pokemon, WATER_TYPE, GRASS_TYPE, FIRE_TYPE, ROCK_TYPE
+from pokemon import Pokemon
+from pokemon_type import WATER_TYPE, GRASS_TYPE, FIRE_TYPE, ROCK_TYPE
 from trainer import PokemonTrainer
 from battle_engine import BattleEngine
 

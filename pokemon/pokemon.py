@@ -1,18 +1,5 @@
 import util
 
-class PokemonType:
-    def __init__(self, name):
-        self.name = name
-    
-    def __repr__(self):
-        return self.name
-
-ELECTRIC_TYPE = PokemonType("electric")
-WATER_TYPE = PokemonType("water")
-GRASS_TYPE = PokemonType("grass")
-FIRE_TYPE = PokemonType("fire")
-ROCK_TYPE = PokemonType("rock")
-
 class Pokemon:
     def __init__(self,
             species,
