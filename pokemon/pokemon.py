@@ -11,6 +11,12 @@ class PokemonTrainer:
         self.name = validate_str(name)
         self.pokemon = pokemon
         self.backpack = backpack
+    
+    def has_remaining_pokemon(self):
+        for poke in self.pokemon:
+            if not poke.fainted:
+                return True
+        return False
 
 class PokemonType:
     def __init__(self, name):
@@ -20,6 +26,10 @@ class PokemonType:
         return self.name
 
 ELECTRIC_TYPE = PokemonType("electric")
+WATER_TYPE = PokemonType("water")
+GRASS_TYPE = PokemonType("grass")
+FIRE_TYPE = PokemonType("fire")
+ROCK_TYPE = PokemonType("rock")
 
 class Pokemon:
     def __init__(self,
@@ -115,54 +125,127 @@ def unit_tests():
     assert not sparky.fainted
 
 
+def create_trainer_1():
+    rokko = Pokemon(
+        species="Samurott",
+        nickname="Rokko",
+        pokemon_type=WATER_TYPE,
+        health_points=100,
+        moves=[
+            "hydro pump"
+        ],
+        level=50,
+    )
+    lancelot = Pokemon(
+        species="Roserade",
+        nickname="Lancelot",
+        pokemon_type=GRASS_TYPE,
+        health_points=100,
+        moves=[
+            "petal dance"
+        ],
+        level=50,
+    )
+    mushishi = Pokemon(
+        species="Arcanine",
+        nickname="Mushishi",
+        pokemon_type=FIRE_TYPE,
+        health_points=100,
+        moves=[
+            "flamethrower"
+        ],
+        level=50,
+    )
+    trainer = PokemonTrainer(
+        name="Alison",
+        pokemon=[rokko, lancelot, mushishi],
+        backpack={}
+    )
+    return trainer
+
+
+def create_trainer_2():
+    minato = Pokemon(
+        species="Decidueye",
+        nickname="Minato",
+        pokemon_type=GRASS_TYPE,
+        health_points=100,
+        moves=[
+            "leaf blade"
+        ],
+        level=50,
+    )
+    watson = Pokemon(
+        species="Walrein",
+        nickname="Watson",
+        pokemon_type=WATER_TYPE,
+        health_points=100,
+        moves=[
+            "ice beam"
+        ],
+        level=50,
+    )
+    seisma = Pokemon(
+        species="Rhyperior",
+        nickname="Seisma",
+        pokemon_type=ROCK_TYPE,
+        health_points=100,
+        moves=[
+            "earthquake"
+        ],
+        level=50,
+    )
+    trainer = PokemonTrainer(
+        name="Susanna",
+        pokemon=[minato, watson, seisma],
+        backpack={}
+    )
+    return trainer
+
+
 def main():
     unit_tests()
 
-    sparky = Pokemon(
-        species="Pikachu",
-        nickname="Sparky",
-        pokemon_type=ELECTRIC_TYPE,
-        health_points=100,
-        moves=[
-            "thunder",
-            "thunderbolt",
-            "quick attack"
-        ],
-        level=50
-    )
+    trainer1 = create_trainer_1()
+    trainer2 = create_trainer_2()
 
-    speedy = Pokemon(
-        species="Pikachu",
-        nickname="Speedy",
-        pokemon_type="electric",
-        health_points=34,
-        moves=[
-            "thundershock",
-            "quick attack"
-        ],
-        level=25
-    )
+    turn_order = [trainer1, trainer2]
+    turn_index = 0
+    def increment_turn_order():
+        return (turn_index + 1) % len(turn_order)
+    def get_current_trainer():
+        return turn_order[turn_index]
 
-    sparky.attack(speedy, "thunderbolt")
+    while True:
+        trainer = get_current_trainer()
 
-    me = PokemonTrainer("Susanna", [sparky, speedy], {})
+        if not trainer.has_remaining_pokemon():
+            print(f"Trainer {trainer.name} does not have anymore pokemon to fight!")
+            print(f"Trainer {trainer.name} has lost the match!")
+            turn_index = increment_turn_order()
+            break
 
-    print(me.name)
+        print(f"It is {trainer.name}'s turn!")
+        print(f"What would you like to do?")
 
-    """
-    Pokemon can have...
-    name
-    health
-    type
-    HP / PP
-    moves
-    level
+        print(f"1. Attack")
+        print(f"2. Forfeit")
 
-    attack
-    defend
-    faint
-    cry (make a noise)
-    """
+        response = input()
+
+        if response == "attack":
+            print("attack!!!")
+        else:
+            print(f"Trainer {trainer.name} has forfeited the match!")
+            print(f"Trainer {trainer.name} has lost the match!")
+            turn_index = increment_turn_order()
+            break
+
+        turn_index = increment_turn_order()
+    
+    trainer = get_current_trainer()
+    print(f"Trainer {trainer.name} has won!")
+
 
 
 if __name__ == "__main__":
