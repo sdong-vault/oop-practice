@@ -1,13 +1,16 @@
+from pokemon_type import PokemonType
 import util
+import pokemon_type
+import moves
 
 class Pokemon:
     def __init__(self,
-            species,
-            nickname,
-            pokemon_type,
-            health_points,
-            moves,
-            level):
+            species: str,
+            nickname: str,
+            pokemon_type: PokemonType,
+            health_points: int,
+            moves: list[moves.PokemonMove],
+            level: int):
         self.__species = util.validate_str(species)
         self.nickname = nickname
 
@@ -57,12 +60,10 @@ def unit_tests():
     sparky = Pokemon(
         species="Pikachu",
         nickname="Sparky",
-        pokemon_type=ELECTRIC_TYPE,
+        pokemon_type=pokemon_type.ELECTRIC_TYPE,
         health_points=100,
         moves=[
-            "thunder",
-            "thunderbolt",
-            "quick attack"
+            moves.THUNDERBOLT
         ],
         level=50
     )

@@ -2,6 +2,7 @@ from pokemon import Pokemon
 from pokemon_type import WATER_TYPE, GRASS_TYPE, FIRE_TYPE, ROCK_TYPE
 from trainer import PokemonTrainer
 from battle_engine import BattleEngine
+import moves
 
 def create_trainer_1():
     rokko = Pokemon(
@@ -10,7 +11,7 @@ def create_trainer_1():
         pokemon_type=WATER_TYPE,
         health_points=100,
         moves=[
-            "hydro pump"
+            moves.HYDRO_PUMP,
         ],
         level=50,
     )
@@ -20,7 +21,7 @@ def create_trainer_1():
         pokemon_type=GRASS_TYPE,
         health_points=100,
         moves=[
-            "petal dance"
+            moves.PETAL_DANCE,
         ],
         level=50,
     )
@@ -30,7 +31,7 @@ def create_trainer_1():
         pokemon_type=FIRE_TYPE,
         health_points=100,
         moves=[
-            "flamethrower"
+            moves.FLAMETHROWER,
         ],
         level=50,
     )
@@ -49,7 +50,7 @@ def create_trainer_2():
         pokemon_type=GRASS_TYPE,
         health_points=100,
         moves=[
-            "leaf blade"
+            moves.PETAL_DANCE,
         ],
         level=50,
     )
@@ -59,7 +60,7 @@ def create_trainer_2():
         pokemon_type=WATER_TYPE,
         health_points=100,
         moves=[
-            "ice beam"
+            moves.HYDRO_PUMP,
         ],
         level=50,
     )
@@ -69,7 +70,7 @@ def create_trainer_2():
         pokemon_type=ROCK_TYPE,
         health_points=100,
         moves=[
-            "earthquake"
+            moves.ROCK_SLIDE,
         ],
         level=50,
     )

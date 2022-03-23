@@ -57,6 +57,9 @@ class BattleEngine:
             print(f"Trainer {battler.name} has forfeited the match!")
             self.change_current_battler_status(BattleEngine.STATUS_LOST)
     
+    def attack_pokemon(self, attacker, move, defender):
+        return
+    
     def determine_winner(self):
         if self.get_current_battler().status == BattleEngine.STATUS_LOST:
             return self.get_current_opponent().battler
