@@ -1,7 +1,35 @@
 
+def validate_str(s: str):
+    if s is not None and len(s) > 0:
+        return s
+    else:
+        raise ValueError()
+
+
+class PokemonTrainer:
+    def __init__(self, name, pokemon, backpack):
+        self.name = validate_str(name)
+        self.pokemon = pokemon
+        self.backpack = backpack
+
+class PokemonType:
+    def __init__(self, name):
+        self.name = name
+    
+    def __repr__(self):
+        return self.name
+
+ELECTRIC_TYPE = PokemonType("electric")
+
 class Pokemon:
-    def __init__(self, species, nickname, pokemon_type, health_points, moves, level):
-        self.__check_species_not_null(species)
+    def __init__(self,
+            species,
+            nickname,
+            pokemon_type,
+            health_points,
+            moves,
+            level):
+        self.__species = validate_str(species)
         self.nickname = nickname
 
         self.pokemon_type = pokemon_type
@@ -10,14 +38,7 @@ class Pokemon:
 
         self.health_points = health_points
         self.max_health_points = health_points
-
         self.fainted = False
-    
-    def __check_species_not_null(self, species):
-        if species is not None:
-            self.__species = species
-        else:
-            raise ValueError()
     
     def attack(self, pokemon, move):
         if move not in self.moves:
@@ -25,6 +46,9 @@ class Pokemon:
         print(f"{self.name} used {move} on {pokemon.name}")
     
     def lose_hp(self, amount):
+        if amount < 0:
+            self.gain_hp(amount * -1)
+
         if self.health_points - amount <= 0:
             self.health_points = 0
             self.fainted = True
@@ -32,11 +56,14 @@ class Pokemon:
             self.health_points -= amount
     
     def gain_hp(self, amount):
+        if amount < 0:
+            self.lose_hp(amount * -1)
+
         if self.health_points == 0:
             self.fainted = False
 
         if self.health_points + amount >= self.max_health_points:
-            self.max_health_points += amount
+            self.health_points = self.max_health_points
         else:
             self.health_points += amount
     
@@ -46,19 +73,12 @@ class Pokemon:
             return self.__species
         return self.nickname
 
-    @staticmethod
-    def which_pokemon_is_stronger(pokemon1, pokemon2):
-        if pokemon1.level > pokemon2.level:
-            return pokemon1
-        else:
-            return pokemon2
 
-
-def main():
+def unit_tests():
     sparky = Pokemon(
         species="Pikachu",
         nickname="Sparky",
-        pokemon_type="electric",
+        pokemon_type=ELECTRIC_TYPE,
         health_points=100,
         moves=[
             "thunder",
@@ -67,25 +87,67 @@ def main():
         ],
         level=50
     )
-    # sparky.__nickname = "poop"  # don't want randos to set nickname randomly
-    # print(sparky.nickname)      # still allow randos to get nickname
+    assert sparky.max_health_points == 100
+
+    # partially lose health
+    sparky.lose_hp(50)
+    assert sparky.health_points == 50
+    assert not sparky.fainted
+
+    # lose health to faint
+    sparky.lose_hp(50)
+    assert sparky.health_points == 0
+    assert sparky.fainted
+
+    # keep losing health should still stay the same
+    sparky.lose_hp(50)
+    assert sparky.health_points == 0
+    assert sparky.fainted
+
+    # healing should revive pokemon
+    sparky.gain_hp(50)
+    assert sparky.health_points == 50
+    assert not sparky.fainted
+
+    # healing beyond the max hp should be capped
+    sparky.gain_hp(100)
+    assert sparky.health_points == 100
+    assert not sparky.fainted
+
+
+def main():
+    unit_tests()
+
+    sparky = Pokemon(
+        species="Pikachu",
+        nickname="Sparky",
+        pokemon_type=ELECTRIC_TYPE,
+        health_points=100,
+        moves=[
+            "thunder",
+            "thunderbolt",
+            "quick attack"
+        ],
+        level=50
+    )
 
     speedy = Pokemon(
-        "Pikachu",
-        "Speedy",
-        "electric",
-        34,
-        [
+        species="Pikachu",
+        nickname="Speedy",
+        pokemon_type="electric",
+        health_points=34,
+        moves=[
             "thundershock",
             "quick attack"
         ],
-        25
+        level=25
     )
 
-    # print(speedy.nickname)
-    # print(Pokemon.which_pokemon_is_stronger(sparky, speedy).nickname)
-
     sparky.attack(speedy, "thunderbolt")
+
+    me = PokemonTrainer("Susanna", [sparky, speedy], {})
+
+    print(me.name)
 
     """
     Pokemon can have...
