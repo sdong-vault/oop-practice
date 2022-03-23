@@ -1,22 +1,4 @@
-
-def validate_str(s: str):
-    if s is not None and len(s) > 0:
-        return s
-    else:
-        raise ValueError()
-
-
-class PokemonTrainer:
-    def __init__(self, name, pokemon, backpack):
-        self.name = validate_str(name)
-        self.pokemon = pokemon
-        self.backpack = backpack
-    
-    def has_remaining_pokemon(self):
-        for poke in self.pokemon:
-            if not poke.fainted:
-                return True
-        return False
+import util
 
 class PokemonType:
     def __init__(self, name):
@@ -39,7 +21,7 @@ class Pokemon:
             health_points,
             moves,
             level):
-        self.__species = validate_str(species)
+        self.__species = util.validate_str(species)
         self.nickname = nickname
 
         self.pokemon_type = pokemon_type
@@ -125,169 +107,8 @@ def unit_tests():
     assert not sparky.fainted
 
 
-def create_trainer_1():
-    rokko = Pokemon(
-        species="Samurott",
-        nickname="Rokko",
-        pokemon_type=WATER_TYPE,
-        health_points=100,
-        moves=[
-            "hydro pump"
-        ],
-        level=50,
-    )
-    lancelot = Pokemon(
-        species="Roserade",
-        nickname="Lancelot",
-        pokemon_type=GRASS_TYPE,
-        health_points=100,
-        moves=[
-            "petal dance"
-        ],
-        level=50,
-    )
-    mushishi = Pokemon(
-        species="Arcanine",
-        nickname="Mushishi",
-        pokemon_type=FIRE_TYPE,
-        health_points=100,
-        moves=[
-            "flamethrower"
-        ],
-        level=50,
-    )
-    trainer = PokemonTrainer(
-        name="Alison",
-        pokemon=[rokko, lancelot, mushishi],
-        backpack={}
-    )
-    return trainer
-
-
-def create_trainer_2():
-    minato = Pokemon(
-        species="Decidueye",
-        nickname="Minato",
-        pokemon_type=GRASS_TYPE,
-        health_points=100,
-        moves=[
-            "leaf blade"
-        ],
-        level=50,
-    )
-    watson = Pokemon(
-        species="Walrein",
-        nickname="Watson",
-        pokemon_type=WATER_TYPE,
-        health_points=100,
-        moves=[
-            "ice beam"
-        ],
-        level=50,
-    )
-    seisma = Pokemon(
-        species="Rhyperior",
-        nickname="Seisma",
-        pokemon_type=ROCK_TYPE,
-        health_points=100,
-        moves=[
-            "earthquake"
-        ],
-        level=50,
-    )
-    trainer = PokemonTrainer(
-        name="Susanna",
-        pokemon=[minato, watson, seisma],
-        backpack={}
-    )
-    return trainer
-
-
-class BattleEngineInfo:
-    STATUS_GOOD = "good"
-    STATUS_LOST = "lost"
-
-    def __init__(self, battler, status=STATUS_GOOD):
-        self.battler = battler
-        self.status = status
-
-
-class BattleEngine:
-    STATUS_GOOD = "good"
-    STATUS_LOST = "lost"
-
-    def __init__(self, battler1, battler2):
-        self.turn_order = [
-            BattleEngineInfo(battler1),
-            BattleEngineInfo(battler2),
-        ]
-        self.turn_index = 0
-
-    def increment_turn_order(self):
-        self.turn_index = (self.turn_index + 1) % len(self.turn_order)
-
-    def get_current_battler(self):
-        return self.turn_order[self.turn_index]
-    
-    def get_current_opponent(self):
-        opponent_index = (self.turn_index + 1) % len(self.turn_order)
-        return self.turn_order[opponent_index]
-    
-    def change_current_battler_status(self, status):
-        self.turn_order[self.turn_index].status = status
-    
-    def prompt_current_battler(self):
-        battler_info = self.get_current_battler()
-        battler = battler_info.battler
-
-        print(f"It is {battler.name}'s turn!")
-        print(f"What would you like to do?")
-
-        print(f"1. Attack")
-        print(f"2. Forfeit")
-
-        response = input()
-        return response
-
-    def resolve_action(self, response):
-        battler_info = self.get_current_battler()
-        battler = battler_info.battler
-
-        if response == "attack":
-            print("attack!!!")
-        else:
-            print(f"Trainer {battler.name} has forfeited the match!")
-            self.change_current_battler_status(BattleEngine.STATUS_LOST)
-    
-    def determine_winner(self):
-        if self.get_current_battler().status == BattleEngine.STATUS_LOST:
-            return self.get_current_opponent().battler
-        elif self.get_current_opponent().status == BattleEngine.STATUS_LOST:
-            return self.get_current_battler().battler
-        else:
-            return None
-
-
 def main():
     unit_tests()
-
-    battle_engine = BattleEngine(
-        create_trainer_1(),
-        create_trainer_2()
-    )
-
-    winner = None
-    while winner is None:
-        response = battle_engine.prompt_current_battler()
-
-        battle_engine.resolve_action(response)
-
-        battle_engine.increment_turn_order()
-
-        winner = battle_engine.determine_winner()
-    
-    print(f"Trainer {winner.name} has won!")
-
 
 
 if __name__ == "__main__":
