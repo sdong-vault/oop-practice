@@ -203,17 +203,23 @@ def create_trainer_2():
     return trainer
 
 
+class BattleEngineInfo:
+    STATUS_GOOD = "good"
+    STATUS_LOST = "lost"
+
+    def __init__(self, battler, status=STATUS_GOOD):
+        self.battler = battler
+        self.status = status
+
+
 class BattleEngine:
+    STATUS_GOOD = "good"
+    STATUS_LOST = "lost"
+
     def __init__(self, battler1, battler2):
         self.turn_order = [
-            {
-                "battler": battler1,
-                "status": "good"
-            },
-            {
-                "battler": battler2,
-                "status": "good"
-            },
+            BattleEngineInfo(battler1),
+            BattleEngineInfo(battler2),
         ]
         self.turn_index = 0
 
@@ -228,11 +234,11 @@ class BattleEngine:
         return self.turn_order[opponent_index]
     
     def change_current_battler_status(self, status):
-        self.turn_order[self.turn_index]["status"] = status
+        self.turn_order[self.turn_index].status = status
     
     def prompt_current_battler(self):
         battler_info = self.get_current_battler()
-        battler = battler_info["battler"]
+        battler = battler_info.battler
 
         print(f"It is {battler.name}'s turn!")
         print(f"What would you like to do?")
@@ -241,18 +247,23 @@ class BattleEngine:
         print(f"2. Forfeit")
 
         response = input()
+        return response
+
+    def resolve_action(self, response):
+        battler_info = self.get_current_battler()
+        battler = battler_info.battler
 
         if response == "attack":
             print("attack!!!")
         else:
             print(f"Trainer {battler.name} has forfeited the match!")
-            self.change_current_battler_status("lost")
+            self.change_current_battler_status(BattleEngine.STATUS_LOST)
     
     def determine_winner(self):
-        if self.get_current_battler()["status"] == "lost":
-            return self.get_current_opponent()["battler"]
-        elif self.get_current_opponent()["status"] == "lost":
-            return self.get_current_battler()["battler"]
+        if self.get_current_battler().status == BattleEngine.STATUS_LOST:
+            return self.get_current_opponent().battler
+        elif self.get_current_opponent().status == BattleEngine.STATUS_LOST:
+            return self.get_current_battler().battler
         else:
             return None
 
@@ -267,7 +278,9 @@ def main():
 
     winner = None
     while winner is None:
-        battle_engine.prompt_current_battler()
+        response = battle_engine.prompt_current_battler()
+
+        battle_engine.resolve_action(response)
 
         battle_engine.increment_turn_order()
 
